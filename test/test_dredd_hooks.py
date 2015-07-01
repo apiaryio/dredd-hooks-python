@@ -1,14 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from __future__ import print_function
-import unittest, sys, socket, os, json, io, threading, time
-
-try:
-    # installed
-    import dredd_hooks as dredd
-except ImportError:
-    # from dev/source
-    this_dir = os.path.abspath(os.path.dirname(__file__))
-    sys.path.append(os.path.join(this_dir, '../'))
-    import dredd_hooks as dredd
+import unittest
+import sys
+import socket
+import os
+import json
+import threading
+import time
+import dredd_hooks as dredd
+if sys.version_info[0] > 2:
+    import io
+else:
+    import StringIO as io
 
 dredd_thr = None
 
@@ -20,6 +24,7 @@ class Connection(object):
 
     def writeline(self, msg):
         msg = msg + dredd.MESSAGE_DELIMITER
+        print("%d"%(sys.version_info[0]))
         if sys.version_info[0] > 2:
             self.wfile.write(msg.encode('utf-8'))
         else:
@@ -35,7 +40,6 @@ class Connection(object):
         self.rfile.close()
         self.wfile.close()
         self.connection.close()
-
 
 
 

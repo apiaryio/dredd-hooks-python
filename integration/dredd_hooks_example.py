@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+#  Copyright (c) 2015 Vilibald Wanča
+#  License: MIT
+#
 import dreddhooks as dredd
 
 # *_all hooks

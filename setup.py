@@ -3,9 +3,9 @@
 from setuptools import setup, find_packages
 
 long_desc = ''' This package contains a bridge between `Dredd API Testing
-Framework`_ and python environment to ease implementation of testing
-hooks provided by Dredd_. Write Dredd_ hooks in python to glue together
-`API Blueprint`_ with your python project
+Framework`_ and Python environment to ease implementation of testing
+hooks provided by Dredd_. Write Dredd_ hooks in Python to glue together
+`API Blueprint`_ with your Python project
 
 .. _Dredd API Testing Framework: http://dredd.readthedocs.org/en/latest/
 .. _Dredd: http://dredd.readthedocs.org/en/latest/
@@ -24,7 +24,7 @@ Usage example::
 requires = ['']
 
 setup(
-    name='dreddhooks',
+    name='dredd_hooks',
     version='0.0.1',
     url='https://github.com/apiaryio/dredd-hooks-python/',
     download_url='http://pypi.python.org/pypi/dredd_hooks',
@@ -48,9 +48,10 @@ setup(
     ],
     keywords='HTTP API testing Dredd',
     platforms='any',
+    scripts=['bin/dredd-hooks-python'],
     packages=find_packages(),
     include_package_data=True,
     install_requires=requires,
     namespace_packages=[],
-    test_suite="tests",
+    test_suite="test",
 )

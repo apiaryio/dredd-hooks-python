@@ -1,11 +1,19 @@
+# -*- coding: utf-8 -*-
+#
+#  Copyright (c) 2015 Vilibald Wanča
+#  License: MIT
+#
 from __future__ import print_function
-import json, sys, os, glob, imp
+import json
+import sys
+import os
+import glob
+import imp
 
 try:
     import SocketServer
 except ImportError:
     import socketserver as SocketServer
-
 
 __all__ = ['before_all',
            'after_all',
@@ -23,7 +31,7 @@ __all__ = ['before_all',
 
 HOST = '127.0.0.1'
 PORT = 61321
-MESSAGE_DELIMITER = "\n"
+MESSAGE_DELIMITER = '\n'
 
 BEFORE_ALL = 'BFA'
 AFTER_ALL = 'AFA'
@@ -37,6 +45,7 @@ AFTER = 'AF'
 hooks = None
 server = None
 
+
 class Hooks(object):
     def __init__(self):
         self._before_all = []
@@ -48,10 +57,12 @@ class Hooks(object):
         self._before = {}
         self._after = {}
 
+
 class HookHandler(SocketServer.StreamRequestHandler):
     """
-    Main hook events handler, upon recpetion executes the correct hook
-    based on the incoming event
+    Main hook events handler, upon reception executes the correct
+    hooks based on the incoming event. Keeps the connection open until
+    the socket is closed by peer.
     """
     def handle(self):
         global hooks
@@ -59,7 +70,7 @@ class HookHandler(SocketServer.StreamRequestHandler):
             while 1:
                 if sys.version_info[0] > 2:
                     msg = json.loads(self.rfile.readline().
-                                      decode('utf-8').strip())
+                                     decode('utf-8').strip())
                 else:
                     msg = json.loads(self.rfile.readline().strip())
 
@@ -72,7 +83,8 @@ class HookHandler(SocketServer.StreamRequestHandler):
                 if msg['event'] == "beforeValidation":
                     [f(msg['data']) for f in hooks._before_each_validation]
                     if msg['data']['name'] in hooks._before_validation:
-                        hooks._before_validation[msg['data']['name']](msg['data'])
+                        hooks._before_validation[msg['data']['name']](
+                            msg['data'])
 
                 if msg['event'] == "before":
                     [f(msg['data']) for f in hooks._before_each]
@@ -95,7 +107,7 @@ class HookHandler(SocketServer.StreamRequestHandler):
         except Exception as e:
             raise e
 
-#Hook Loader
+
 def load_hook_files(pathname):
     """
      Loads files either defined as a glob or a single file path.
@@ -121,11 +133,12 @@ def load_hook_files(pathname):
                 if hook == BEFORE_EACH_VALIDATION:
                     hooks._before_each_validation.append(obj)
                 if hook == BEFORE_VALIDATION:
-                    hooks._before_validation[getattr(obj,'dredd_name')] = obj
+                    hooks._before_validation[getattr(obj, 'dredd_name')] = obj
                 if hook == BEFORE:
-                    hooks._before[getattr(obj,'dredd_name')] = obj
+                    hooks._before[getattr(obj, 'dredd_name')] = obj
                 if hook == AFTER:
-                    hooks._after[getattr(obj,'dredd_name')] = obj
+                    hooks._after[getattr(obj, 'dredd_name')] = obj
+
 
 # Hook decorators
 # Each adds a function property so that the hook loader
@@ -134,21 +147,26 @@ def before_all(f):
     f.dredd_hook = BEFORE_ALL
     return f
 
+
 def after_all(f):
     f.dredd_hook = AFTER_ALL
     return f
+
 
 def before_each(f):
     f.dredd_hook = BEFORE_EACH
     return f
 
+
 def before_each_validation(f):
     f.dredd_hook = BEFORE_EACH_VALIDATION
     return f
 
+
 def after_each(f):
     f.dredd_hook = AFTER_EACH
     return f
+
 
 def before_validation(name):
     def decorator(f):
@@ -157,12 +175,14 @@ def before_validation(name):
         return f
     return decorator
 
+
 def before(name):
     def decorator(f):
         f.dredd_hook = BEFORE
         f.dredd_name = name
         return f
     return decorator
+
 
 def after(name):
     def decorator(f):
@@ -176,9 +196,10 @@ def shutdown():
     global server
     server.shutdown()
 
+
 def main(args):
     global server
-    #Load hook files
+    # Load hook files
     for a in args:
         load_hook_files(a)
     # Start the server
@@ -186,10 +207,3 @@ def main(args):
     server = SocketServer.TCPServer((HOST, PORT), HookHandler)
     print('Dredd Python hooks handler is running', file=sys.stderr)
     server.serve_forever()
-
-
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Not enough parameters", file=sys.stderr)
-        exit(-1)
-    main(sys.argv[1:])

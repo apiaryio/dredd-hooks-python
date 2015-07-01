@@ -6,9 +6,9 @@ About
 =====
 
 This package contains a bridge between `Dredd API Testing Framework`_
-and python environment to ease implementation of testing hooks
-provided by Dredd_. Write Dredd_ hooks in python to glue together `API
-Blueprint`_ with your python project
+and Python environment to ease implementation of testing hooks
+provided by Dredd_. Write Dredd_ hooks in Python to glue together `API
+Blueprint`_ with your Python project
 
 .. _Dredd API Testing Framework: http://dredd.readthedocs.org/en/latest/
 .. _Dredd: http://dredd.readthedocs.org/en/latest/
@@ -36,7 +36,7 @@ __ http://pypi.python.org/pypi/dredd_hooks
 From source (tar.gz or checkout)
 --------------------------------
 
-Unpack the archive, enter the dredd-hooks-python directory and run::
+Unpack the archive, enter the ``dredd-hooks-python`` directory and run::
 
     python setup.py install
 
@@ -54,7 +54,7 @@ downloading the files and installing as described above or using::
 Usage
 =====
 
-1. Create a hook file in `hooks.py`:
+1. Create a hook file in ``hooks.py``:
 
 .. code-block:: python
 
@@ -72,10 +72,10 @@ Usage
 API
 ===
 
-Module `dredd_hooks` defines follwoing decorators `before`, `after`,
-`before_all`, `after_all`, `before_each`, `after_each`,
-`before_validation`, `before_each_validation`. `before`,
-`before_validation` and `after` hooks are identified by `transaction
+Module ``dredd_hooks`` defines follwoing decorators ``before``, ``after``,
+``before_all``, ``after_all``, ``before_each``, ``after_each``,
+``before_validation``, ``before_each_validation``. ``before``,
+``before_validation`` and ``after`` hooks are identified by `transaction
 name
 <http://dredd.readthedocs.org/en/latest/hooks/#getting-transaction-names>`_.
 
@@ -85,9 +85,9 @@ Usage is very similar to `sync JS hooks API
 Contributing
 ============
 1. Fork it
-2. Create your feature branch (`git checkout -b my-newfeaure`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Puanch (`git push origin my-new-feature`)
+2. Create your feature branch (``git checkout -b my-newfeaure``)
+3. Commit your changes (``git commit -am 'Add some feature'``)
+4. Puanch (``git push origin my-new-feature``)
 5. Create a new Pull Request
 
 :copyright: Copyright 2015 by Vilibald Wanča.
