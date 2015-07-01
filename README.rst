@@ -15,6 +15,16 @@ Blueprint`_ with your python project
 .. _API Blueprint: https://apiblueprint.org/
 
 
+
+Usage example::
+
+    import dredd_hooks as dredd
+
+    @dredd.before_all
+    def foo(transactions):
+        for t in transactions:
+            t['foo'] = bar
+
 Download
 ========
 
@@ -28,7 +38,7 @@ From source (tar.gz or checkout)
 
 Unpack the archive, enter the dredd-hooks-python directory and run::
 
-    $ python setup.py install
+    python setup.py install
 
 
 Setuptools/PyPI_
@@ -60,25 +70,24 @@ Usage
      $ dredd apiary.apib localhost:3000 --language python --hookfiles hooks.py
 
 API
----
+===
 
 Module `dredd_hooks` defines follwoing decorators `before`, `after`,
 `before_all`, `after_all`, `before_each`, `after_each`,
 `before_validation`, `before_each_validation`. `before`,
 `before_validation` and `after` hooks are identified by `transaction
 name
-<http://dredd.readthedocs.org/en/latest/hooks/#getting-transaction-names>`.
+<http://dredd.readthedocs.org/en/latest/hooks/#getting-transaction-names>`_.
 
 Usage is very similar to `sync JS hooks API
-<http://dredd.readthedocs.org/en/latest/hooks/#sync-api>`
+<http://dredd.readthedocs.org/en/latest/hooks/#sync-api>`_
 
 Contributing
 ============
-
 1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
+2. Create your feature branch (`git checkout -b my-newfeaure`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
+4. Puanch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
 :copyright: Copyright 2015 by Vilibald Wanča.
