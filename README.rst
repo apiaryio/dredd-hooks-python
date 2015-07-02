@@ -72,7 +72,7 @@ Usage
 API
 ===
 
-Module ``dredd_hooks`` defines follwoing decorators ``before``, ``after``,
+Module ``dredd_hooks`` defines following decorators ``before``, ``after``,
 ``before_all``, ``after_all``, ``before_each``, ``after_each``,
 ``before_validation``, ``before_each_validation``. ``before``,
 ``before_validation`` and ``after`` hooks are identified by `transaction
@@ -85,9 +85,9 @@ Usage is very similar to `sync JS hooks API
 Contributing
 ============
 1. Fork it
-2. Create your feature branch (``git checkout -b my-newfeaure``)
+2. Create your feature branch (``git checkout -b my-newfeature``)
 3. Commit your changes (``git commit -am 'Add some feature'``)
-4. Puanch (``git push origin my-new-feature``)
+4. Push (``git push origin my-new-feature``)
 5. Create a new Pull Request
 
 :copyright: Copyright 2015 by Vilibald Wanča.

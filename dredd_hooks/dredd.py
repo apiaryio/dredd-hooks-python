@@ -67,7 +67,7 @@ class HookHandler(SocketServer.StreamRequestHandler):
     def handle(self):
         global hooks
         try:
-            while 1:
+            while True:
                 if sys.version_info[0] > 2:
                     msg = json.loads(self.rfile.readline().
                                      decode('utf-8').strip())
@@ -75,37 +75,35 @@ class HookHandler(SocketServer.StreamRequestHandler):
                     msg = json.loads(self.rfile.readline().strip())
 
                 if msg['event'] == "beforeAll":
-                    [f(msg['data']) for f in hooks._before_all]
+                    [fn(msg['data']) for fn in hooks._before_all]
 
                 if msg['event'] == "afterAll":
-                    [f(msg['data']) for f in hooks._after_all]
+                    [fn(msg['data']) for fn in hooks._after_all]
 
                 if msg['event'] == "beforeValidation":
-                    [f(msg['data']) for f in hooks._before_each_validation]
+                    [fn(msg['data']) for fn in hooks._before_each_validation]
                     if msg['data']['name'] in hooks._before_validation:
                         hooks._before_validation[msg['data']['name']](
                             msg['data'])
 
                 if msg['event'] == "before":
-                    [f(msg['data']) for f in hooks._before_each]
+                    [fn(msg['data']) for fn in hooks._before_each]
                     if msg['data']['name'] in hooks._before:
                         hooks._before[msg['data']['name']](msg['data'])
 
                 if msg['event'] == "after":
                     if msg['data']['name'] in hooks._after:
                         hooks._after[msg['data']['name']](msg['data'])
-                    [f(msg['data']) for f in hooks._after_each]
+                    [fn(msg['data']) for fn in hooks._after_each]
 
                 msg = json.dumps(msg) + MESSAGE_DELIMITER
                 if sys.version_info[0] > 2:
                     self.wfile.write(msg.encode('utf-8'))
                 else:
                     self.wfile.write(msg)
-        except ValueError as e:
+        except ValueError:
             print("\nConnection closed\n", file=sys.stderr)
             return
-        except Exception as e:
-            raise e
 
 
 def load_hook_files(pathname):
