@@ -106,11 +106,11 @@ class TestDreddHooks(unittest.TestCase):
         self.assertDictEqual(msg, expect)
 
     def test_before(self):
-        self.conn.writeline(json.dumps({"event": "before", "data": {"name": "Machines > Machines collection > Get Machines"}}))
+        self.conn.writeline(json.dumps({"event": "beforeEach", "data": {"name": "Machines > Machines collection > Get Machines"}}))
         msg = json.loads(self.conn.readline())
         expect = \
         {
-            "event": "before",
+            "event": "beforeEach",
             "data":
             {
                 "name": "Machines > Machines collection > Get Machines",
@@ -125,11 +125,11 @@ class TestDreddHooks(unittest.TestCase):
 
 
     def test_after(self):
-        self.conn.writeline(json.dumps({"event": "after", "data": {"name": "Machines > Machines collection > Get Machines"}}))
+        self.conn.writeline(json.dumps({"event": "afterEach", "data": {"name": "Machines > Machines collection > Get Machines"}}))
         msg = json.loads(self.conn.readline())
         expect = \
         {
-            "event": "after",
+            "event": "afterEach",
             "data":
             {
                 "name": "Machines > Machines collection > Get Machines",

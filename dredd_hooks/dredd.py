@@ -86,12 +86,12 @@ class HookHandler(SocketServer.StreamRequestHandler):
                         hooks._before_validation[msg['data']['name']](
                             msg['data'])
 
-                if msg['event'] == "before":
+                if msg['event'] == "beforeEach":
                     [fn(msg['data']) for fn in hooks._before_each]
                     if msg['data']['name'] in hooks._before:
                         hooks._before[msg['data']['name']](msg['data'])
 
-                if msg['event'] == "after":
+                if msg['event'] == "afterEach":
                     if msg['data']['name'] in hooks._after:
                         hooks._after[msg['data']['name']](msg['data'])
                     [fn(msg['data']) for fn in hooks._after_each]
@@ -103,7 +103,6 @@ class HookHandler(SocketServer.StreamRequestHandler):
                     self.wfile.write(msg)
         except ValueError:
             print("\nConnection closed\n", file=sys.stderr)
-            return
 
 
 def load_hook_files(pathname):
