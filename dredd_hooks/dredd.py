@@ -74,12 +74,12 @@ class HookHandler(SocketServer.StreamRequestHandler):
                     if msg['data']['name'] in hooks._before_validation:
                         hooks._before_validation[msg['data']['name']](msg['data'])
 
-                if msg['event'] == "before":
+                if msg['event'] == "beforeEach":
                     [f(msg['data']) for f in hooks._before_each]
                     if msg['data']['name'] in hooks._before:
                         hooks._before[msg['data']['name']](msg['data'])
 
-                if msg['event'] == "after":
+                if msg['event'] == "afterEach":
                     if msg['data']['name'] in hooks._after:
                         hooks._after[msg['data']['name']](msg['data'])
                     [f(msg['data']) for f in hooks._after_each]
