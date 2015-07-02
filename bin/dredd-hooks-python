@@ -11,5 +11,6 @@ import dredd_hooks as dredd
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Not enough parameters", file=sys.stderr)
+        sys.stderr.flush()
         exit(-1)
     dredd.main(sys.argv[1:])
