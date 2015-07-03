@@ -2,6 +2,9 @@
 Python Hooks Bridge for Dredd API Testing Framework
 ===================================================
 
+.. image:: https://circleci.com/gh/apiaryio/dredd-hooks-python.svg?style=svg&circle-token=fabe4e989063164814e78dab78acb58d99e95a2f
+    :target: https://circleci.com/gh/apiaryio/dredd-hooks-python
+
 About
 =====
 
@@ -89,6 +92,9 @@ Contributing
 3. Commit your changes (``git commit -am 'Add some feature'``)
 4. Push (``git push origin my-new-feature``)
 5. Create a new Pull Request
+
+Don't forget about tests, see ``test`` directory. The project uses
+``unittest`` package and ``tox``.
 
 :copyright: Copyright 2015 by Vilibald Wanča.
 :license: MIT, see LICENSE for details.
