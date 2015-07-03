@@ -8,23 +8,23 @@ import os
 import json
 import threading
 import time
-import dredd_hooks as dredd
+import dredd_hooks as hooks
 if sys.version_info[0] > 2:
     import io
 else:
     import StringIO as io
 
-dredd_thr = None
+hooks_thr = None
 
 
 class Connection(object):
     def __init__(self):
-        self.connection = socket.create_connection((dredd.HOST, dredd.PORT))
+        self.connection = socket.create_connection((hooks.HOST, hooks.PORT))
         self.rfile = self.connection.makefile('rb', -1)  # buffered input
         self.wfile = self.connection.makefile('wb', 0)  # unbuffered output
 
     def writeline(self, msg):
-        msg = msg + dredd.MESSAGE_DELIMITER
+        msg = msg + hooks.MESSAGE_DELIMITER
         print("%d" % (sys.version_info[0]))
         if sys.version_info[0] > 2:
             self.wfile.write(msg.encode('utf-8'))
@@ -52,9 +52,9 @@ class TestDreddHooks(unittest.TestCase):
         cls.output = io.StringIO()
         cls.saved_stdout = sys.stdout
         sys.stdout = cls.output
-        cls.dredd_thr = threading.Thread(target=dredd.main,
+        cls.hooks_thr = threading.Thread(target=hooks.main,
                                          args=([os.path.abspath(__file__)],))
-        cls.dredd_thr.start()
+        cls.hooks_thr.start()
         time.sleep(1)
         cls.conn = Connection()
 
@@ -63,8 +63,8 @@ class TestDreddHooks(unittest.TestCase):
         cls.output.close()
         sys.stdout = cls.saved_stdout
         cls.conn.close()
-        dredd.shutdown()
-        cls.dredd_thr.join()
+        hooks.shutdown()
+        cls.hooks_thr.join()
 
     def setUp(self):
         pass
@@ -165,7 +165,7 @@ class TestDreddHooks(unittest.TestCase):
 
 
 # *_all hooks
-@dredd.before_all
+@hooks.before_all
 def before_all_test(transactions):
     if 'hooks_modifications' not in transactions[0]:
         transactions[0]['hooks_modifications'] = []
@@ -173,7 +173,7 @@ def before_all_test(transactions):
     print('before all hook')
 
 
-@dredd.after_all
+@hooks.after_all
 def after_all_test(transactions):
     if 'hooks_modifications' not in transactions[0]:
         transactions[0]['hooks_modifications'] = []
@@ -182,7 +182,7 @@ def after_all_test(transactions):
 
 
 # *_each hooks
-@dredd.before_each
+@hooks.before_each
 def before_each_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -190,7 +190,7 @@ def before_each_test(transaction):
     print('before each hook')
 
 
-@dredd.before_each_validation
+@hooks.before_each_validation
 def before_each_validation_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -198,7 +198,7 @@ def before_each_validation_test(transaction):
     print('before each validation hook')
 
 
-@dredd.after_each
+@hooks.after_each
 def after_each_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -207,7 +207,7 @@ def after_each_test(transaction):
 
 
 # *_each hooks
-@dredd.before_validation('Machines > Machines collection > Get Machines')
+@hooks.before_validation('Machines > Machines collection > Get Machines')
 def before_validation_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -215,7 +215,7 @@ def before_validation_test(transaction):
     print('before validation hook')
 
 
-@dredd.before("Machines > Machines collection > Get Machines")
+@hooks.before("Machines > Machines collection > Get Machines")
 def before_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -223,7 +223,7 @@ def before_test(transaction):
     print('before hook')
 
 
-@dredd.after('Machines > Machines collection > Get Machines')
+@hooks.after('Machines > Machines collection > Get Machines')
 def after_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []

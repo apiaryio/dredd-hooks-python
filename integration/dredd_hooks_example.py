@@ -3,11 +3,11 @@
 #  Copyright (c) 2015 Vilibald Wanča
 #  License: MIT
 #
-import dredd_hooks as dredd
+import dredd_hooks as hooks
 import sys
 
 # *_all hooks
-@dredd.before_all
+@hooks.before_all
 def before_all_test(transactions):
     if 'hooks_modifications' not in transactions[0]:
         transactions[0]['hooks_modifications'] = []
@@ -16,7 +16,7 @@ def before_all_test(transactions):
     sys.stdout.flush()
 
 
-@dredd.after_all
+@hooks.after_all
 def after_all_test(transactions):
     print('YAY', file=sys.stderr)
     sys.stderr.flush()
@@ -28,7 +28,7 @@ def after_all_test(transactions):
 
 
 # *_each hooks
-@dredd.before_each
+@hooks.before_each
 def before_each_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -37,7 +37,7 @@ def before_each_test(transaction):
     sys.stdout.flush()
 
 
-@dredd.before_each_validation
+@hooks.before_each_validation
 def before_each_validation_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -46,7 +46,7 @@ def before_each_validation_test(transaction):
     sys.stdout.flush()
 
 
-@dredd.after_each
+@hooks.after_each
 def after_each_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -56,7 +56,7 @@ def after_each_test(transaction):
 
 
 # *_each hooks
-@dredd.before_validation('Machines > Machines collection > Get Machines')
+@hooks.before_validation('Machines > Machines collection > Get Machines')
 def before_validation_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -65,7 +65,7 @@ def before_validation_test(transaction):
     sys.stdout.flush()
 
 
-@dredd.before("Machines > Machines collection > Get Machines")
+@hooks.before("Machines > Machines collection > Get Machines")
 def before_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
@@ -74,7 +74,7 @@ def before_test(transaction):
     sys.stdout.flush()
 
 
-@dredd.after('Machines > Machines collection > Get Machines')
+@hooks.after('Machines > Machines collection > Get Machines')
 def after_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []

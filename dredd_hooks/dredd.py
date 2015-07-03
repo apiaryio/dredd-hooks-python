@@ -192,6 +192,8 @@ def after(name):
 def shutdown():
     global server
     server.shutdown()
+    print("Dredd Python hooks handler shutdown", file=sys.stderr)
+    sys.stderr.flush()
 
 
 def main(args):

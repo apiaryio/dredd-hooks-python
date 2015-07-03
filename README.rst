@@ -21,12 +21,12 @@ Blueprint`_ with your Python project
 
 Usage example::
 
-    import dredd_hooks as dredd
+    import dredd_hooks as hooks
 
-    @dredd.before_all
+    @hooks.before_all
     def foo(transactions):
         for t in transactions:
-            t['foo'] = bar
+            t['request]['headers']['content-type'] = 'application/json'
 
 Download
 ========
