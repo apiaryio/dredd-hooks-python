@@ -4,6 +4,7 @@
 #  Copyright (c) 2015 Vilibald Wanča
 #  License: MIT
 #
+from __future__ import print_function
 import sys
 import dredd_hooks as dredd
 
