@@ -1,6 +1,6 @@
 machine:
   environment:
-    PYTHONDONTWRITEBYTECODE: ‘1'
+    PYTHONDONTWRITEBYTECODE: '1'
 
 dependencies:
    pre:

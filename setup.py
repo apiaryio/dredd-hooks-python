@@ -4,8 +4,6 @@ from setuptools import setup, find_packages
 
 long_desc = open('README.rst').read()
 
-requires = ['flake8']
-
 setup(
     name='dredd_hooks',
     version='0.0.1',
@@ -34,6 +32,6 @@ setup(
     scripts=['bin/dredd-hooks-python'],
     packages=find_packages(),
     include_package_data=True,
-    install_requires=requires,
+    tests_require=['flake8'],
     test_suite="test",
 )

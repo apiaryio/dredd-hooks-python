@@ -203,4 +203,5 @@ def main(args):
     SocketServer.TCPServer.allow_reuse_address = True
     server = SocketServer.TCPServer((HOST, PORT), HookHandler)
     print('Dredd Python hooks handler is running', file=sys.stderr)
+    sys.stderr.flush()
     server.serve_forever()
