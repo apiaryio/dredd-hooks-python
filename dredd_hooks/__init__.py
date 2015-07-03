@@ -6,8 +6,8 @@
 #
 
 from .dredd import (before_all, after_all, before_each, before_each_validation,
-                   after_each, before_validation, before, after,
-                   main, shutdown, HOST, PORT, MESSAGE_DELIMITER)
+                    after_each, before_validation, before, after,
+                    main, shutdown, HOST, PORT, MESSAGE_DELIMITER)
 
 
 __all__ = ['before_all',

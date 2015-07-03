@@ -16,15 +16,16 @@ else:
 
 dredd_thr = None
 
+
 class Connection(object):
     def __init__(self):
         self.connection = socket.create_connection((dredd.HOST, dredd.PORT))
-        self.rfile = self.connection.makefile('rb', -1) # buffered input
-        self.wfile = self.connection.makefile('wb', 0) # unbuffered output
+        self.rfile = self.connection.makefile('rb', -1)  # buffered input
+        self.wfile = self.connection.makefile('wb', 0)  # unbuffered output
 
     def writeline(self, msg):
         msg = msg + dredd.MESSAGE_DELIMITER
-        print("%d"%(sys.version_info[0]))
+        print("%d" % (sys.version_info[0]))
         if sys.version_info[0] > 2:
             self.wfile.write(msg.encode('utf-8'))
         else:
@@ -42,7 +43,6 @@ class Connection(object):
         self.connection.close()
 
 
-
 class TestDreddHooks(unittest.TestCase):
     """
     Tests all the hooks defined.
@@ -52,7 +52,8 @@ class TestDreddHooks(unittest.TestCase):
         cls.output = io.StringIO()
         cls.saved_stdout = sys.stdout
         sys.stdout = cls.output
-        cls.dredd_thr = threading.Thread(target=dredd.main,args=([os.path.abspath(__file__)],))
+        cls.dredd_thr = threading.Thread(target=dredd.main,
+                                         args=([os.path.abspath(__file__)],))
         cls.dredd_thr.start()
         time.sleep(1)
         cls.conn = Connection()
@@ -67,6 +68,7 @@ class TestDreddHooks(unittest.TestCase):
 
     def setUp(self):
         pass
+
     def tearDown(self):
         pass
 
@@ -75,7 +77,7 @@ class TestDreddHooks(unittest.TestCase):
         msg = json.loads(self.conn.readline())
         expect = {"event": "beforeAll",
                   "data": [{
-                      "hooks_modifications" : ["before all mod"]}]}
+                      "hooks_modifications": ["before all mod"]}]}
         self.assertDictEqual(msg, expect)
 
     def test_after_all(self):
@@ -83,64 +85,71 @@ class TestDreddHooks(unittest.TestCase):
         msg = json.loads(self.conn.readline())
         expect = {"event": "afterAll",
                   "data": [{
-                      "hooks_modifications" : ["after all mod"]}]}
+                      "hooks_modifications": ["after all mod"]}]}
         self.assertDictEqual(msg, expect)
 
     def test_before_validation(self):
-        self.conn.writeline(json.dumps({"event": "beforeValidation",
-                                        "data": {"name": "Machines > Machines collection > Get Machines"}}))
+        self.conn.writeline(json.dumps(
+            {"event": "beforeEachValidation",
+             "data": {
+                 "name": "Machines > Machines collection > Get Machines"}}))
         msg = json.loads(self.conn.readline())
         expect = \
-        {
-            "event": "beforeValidation",
-            "data":
             {
-                "name": "Machines > Machines collection > Get Machines",
-                "hooks_modifications" :
-                [
-                    "before each validation mod",
-                    "before validation mod"
-                ]
+                "event": "beforeEachValidation",
+                "data":
+                {
+                    "name": "Machines > Machines collection > Get Machines",
+                    "hooks_modifications":
+                    [
+                        "before each validation mod",
+                        "before validation mod"
+                    ]
+                }
             }
-        }
         self.assertDictEqual(msg, expect)
 
     def test_before(self):
-        self.conn.writeline(json.dumps({"event": "beforeEach", "data": {"name": "Machines > Machines collection > Get Machines"}}))
+        self.conn.writeline(json.dumps(
+            {"event": "beforeEach",
+             "data": {
+                 "name": "Machines > Machines collection > Get Machines"}}))
         msg = json.loads(self.conn.readline())
         expect = \
-        {
-            "event": "beforeEach",
-            "data":
             {
-                "name": "Machines > Machines collection > Get Machines",
-                "hooks_modifications" :
-                [
-                    "before each mod",
-                    "before mod"
-                ]
+                "event": "beforeEach",
+                "data":
+                {
+                    "name": "Machines > Machines collection > Get Machines",
+                    "hooks_modifications":
+                    [
+                        "before each mod",
+                        "before mod"
+                    ]
+                }
             }
-        }
         self.assertDictEqual(msg, expect)
 
-
     def test_after(self):
-        self.conn.writeline(json.dumps({"event": "afterEach", "data": {"name": "Machines > Machines collection > Get Machines"}}))
+        self.conn.writeline(json.dumps(
+            {"event": "afterEach",
+             "data": {
+                 "name": "Machines > Machines collection > Get Machines"}}))
         msg = json.loads(self.conn.readline())
         expect = \
-        {
-            "event": "afterEach",
-            "data":
             {
-                "name": "Machines > Machines collection > Get Machines",
-                "hooks_modifications" :
-                [
-                    "after mod",
-                    "after each mod",
-                ],
-                "fail": "Yay! Failed!",
+                "event": "afterEach",
+                "data":
+                {
+                    "name": "Machines > Machines collection > Get Machines",
+                    "hooks_modifications":
+                    [
+                        "after mod",
+                        "after each mod",
+                    ],
+                    "fail": "Yay! Failed!",
+                }
             }
-        }
         self.assertDictEqual(msg, expect)
 
     def test_output(self):
@@ -154,6 +163,7 @@ class TestDreddHooks(unittest.TestCase):
                   'after hook']:
             self.assertNotEqual(out.find(s), -1)
 
+
 # *_all hooks
 @dredd.before_all
 def before_all_test(transactions):
@@ -162,12 +172,14 @@ def before_all_test(transactions):
     transactions[0]['hooks_modifications'].append("before all mod")
     print('before all hook')
 
+
 @dredd.after_all
 def after_all_test(transactions):
     if 'hooks_modifications' not in transactions[0]:
         transactions[0]['hooks_modifications'] = []
     transactions[0]['hooks_modifications'].append("after all mod")
     print('after all hook')
+
 
 # *_each hooks
 @dredd.before_each
@@ -177,6 +189,7 @@ def before_each_test(transaction):
     transaction['hooks_modifications'].append("before each mod")
     print('before each hook')
 
+
 @dredd.before_each_validation
 def before_each_validation_test(transaction):
     if 'hooks_modifications' not in transaction:
@@ -184,12 +197,14 @@ def before_each_validation_test(transaction):
     transaction['hooks_modifications'].append("before each validation mod")
     print('before each validation hook')
 
+
 @dredd.after_each
 def after_each_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
     transaction['hooks_modifications'].append("after each mod")
     print('after each hook')
+
 
 # *_each hooks
 @dredd.before_validation('Machines > Machines collection > Get Machines')
@@ -199,12 +214,14 @@ def before_validation_test(transaction):
     transaction['hooks_modifications'].append("before validation mod")
     print('before validation hook')
 
+
 @dredd.before("Machines > Machines collection > Get Machines")
 def before_test(transaction):
     if 'hooks_modifications' not in transaction:
         transaction['hooks_modifications'] = []
     transaction['hooks_modifications'].append("before mod")
     print('before hook')
+
 
 @dredd.after('Machines > Machines collection > Get Machines')
 def after_test(transaction):

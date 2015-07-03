@@ -80,7 +80,7 @@ class HookHandler(SocketServer.StreamRequestHandler):
                 if msg['event'] == "afterAll":
                     [fn(msg['data']) for fn in hooks._after_all]
 
-                if msg['event'] == "beforeValidation":
+                if msg['event'] == "beforeEachValidation":
                     [fn(msg['data']) for fn in hooks._before_each_validation]
                     if msg['data']['name'] in hooks._before_validation:
                         hooks._before_validation[msg['data']['name']](
