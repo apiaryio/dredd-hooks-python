@@ -1,3 +1,11 @@
 machine:
   environment:
     PYTHONDONTWRITEBYTECODE: ‘1'
+
+dependencies:
+   pre:
+     - pip install flake8
+
+test:
+   pre:
+     - python setup.py flake8
