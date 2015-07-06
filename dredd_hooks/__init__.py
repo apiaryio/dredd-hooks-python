@@ -1,20 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  Copyright (c) 2015 Apiary
+#  Copyright (c) 2015 Vilibald Wanča
 #  License: MIT
 #
 
-try:
-    # installed
-    from dredd import *
-except ImportError:
-    # from dev/source
-    import os, sys
-    this_dir = os.path.abspath(os.path.dirname(__file__))
-    sys.path.append(os.path.join(this_dir, './'))
-    from dredd import *
+from .dredd import (before_all, after_all, before_each, before_each_validation,
+                    after_each, before_validation, before, after,
+                    main, shutdown, HOST, PORT, MESSAGE_DELIMITER)
+
+
+__all__ = ['before_all',
+           'after_all',
+           'before_each',
+           'before_each_validation',
+           'after_each',
+           'before_validation',
+           'before',
+           'after',
+           'main',
+           'shutdown',
+           'HOST',
+           'PORT',
+           'MESSAGE_DELIMITER']
 
 __version__ = '0.0.1'
-
-

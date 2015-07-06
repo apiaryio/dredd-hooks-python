@@ -2,18 +2,31 @@
 Python Hooks Bridge for Dredd API Testing Framework
 ===================================================
 
+.. image:: https://circleci.com/gh/apiaryio/dredd-hooks-python.svg?style=svg&circle-token=fabe4e989063164814e78dab78acb58d99e95a2f
+    :target: https://circleci.com/gh/apiaryio/dredd-hooks-python
+
 About
 =====
 
 This package contains a bridge between `Dredd API Testing Framework`_
-and python environment to ease implementation of testing hooks
-provided by Dredd_. Write Dredd_ hooks in python to glue together `API
-Blueprint`_ with your python project
+and Python environment to ease implementation of testing hooks
+provided by Dredd_. Write Dredd_ hooks in Python to glue together `API
+Blueprint`_ with your Python project
 
 .. _Dredd API Testing Framework: http://dredd.readthedocs.org/en/latest/
 .. _Dredd: http://dredd.readthedocs.org/en/latest/
 .. _API Blueprint: https://apiblueprint.org/
 
+
+
+Usage example::
+
+    import dredd_hooks as hooks
+
+    @hooks.before_all
+    def foo(transactions):
+        for t in transactions:
+            t['request]['headers']['content-type'] = 'application/json'
 
 Download
 ========
@@ -26,9 +39,9 @@ __ http://pypi.python.org/pypi/dredd_hooks
 From source (tar.gz or checkout)
 --------------------------------
 
-Unpack the archive, enter the dredd-hooks-python directory and run::
+Unpack the archive, enter the ``dredd-hooks-python`` directory and run::
 
-    $ python setup.py install
+    python setup.py install
 
 
 Setuptools/PyPI_
@@ -44,7 +57,7 @@ downloading the files and installing as described above or using::
 Usage
 =====
 
-1. Create a hook file in `hooks.py`:
+1. Create a hook file in ``hooks.py``:
 
 .. code-block:: python
 
@@ -60,26 +73,28 @@ Usage
      $ dredd apiary.apib localhost:3000 --language python --hookfiles hooks.py
 
 API
----
+===
 
-Module `dredd_hooks` defines follwoing decorators `before`, `after`,
-`before_all`, `after_all`, `before_each`, `after_each`,
-`before_validation`, `before_each_validation`. `before`,
-`before_validation` and `after` hooks are identified by `transaction
+Module ``dredd_hooks`` defines following decorators ``before``, ``after``,
+``before_all``, ``after_all``, ``before_each``, ``after_each``,
+``before_validation``, ``before_each_validation``. ``before``,
+``before_validation`` and ``after`` hooks are identified by `transaction
 name
-<http://dredd.readthedocs.org/en/latest/hooks/#getting-transaction-names>`.
+<http://dredd.readthedocs.org/en/latest/hooks/#getting-transaction-names>`_.
 
 Usage is very similar to `sync JS hooks API
-<http://dredd.readthedocs.org/en/latest/hooks/#sync-api>`
+<http://dredd.readthedocs.org/en/latest/hooks/#sync-api>`_
 
 Contributing
 ============
-
 1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
+2. Create your feature branch (``git checkout -b my-newfeature``)
+3. Commit your changes (``git commit -am 'Add some feature'``)
+4. Push (``git push origin my-new-feature``)
 5. Create a new Pull Request
+
+Don't forget about tests, see ``test`` directory. The project uses
+``unittest`` package and ``tox``.
 
 :copyright: Copyright 2015 by Vilibald Wanča.
 :license: MIT, see LICENSE for details.

@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  Copyright (c) 2015 Vilibald Wanča
+#  License: MIT
+#
+from __future__ import print_function
+import sys
+import dredd_hooks as dredd
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Not enough parameters", file=sys.stderr)
+        sys.stderr.flush()
+        exit(-1)
+    dredd.main(sys.argv[1:])
