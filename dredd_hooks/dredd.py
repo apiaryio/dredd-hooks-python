@@ -74,27 +74,30 @@ class HookHandler(SocketServer.StreamRequestHandler):
                 else:
                     msg = json.loads(self.rfile.readline().strip())
 
+                data = msg['data']
                 if msg['event'] == "beforeAll":
-                    [fn(msg['data']) for fn in hooks._before_all]
+                    [fn(data) for fn in hooks._before_all]
 
                 if msg['event'] == "afterAll":
-                    [fn(msg['data']) for fn in hooks._after_all]
+                    [fn(data) for fn in hooks._after_all]
 
                 if msg['event'] == "beforeEachValidation":
-                    [fn(msg['data']) for fn in hooks._before_each_validation]
-                    if msg['data']['name'] in hooks._before_validation:
-                        hooks._before_validation[msg['data']['name']](
-                            msg['data'])
+                    [fn(data) for fn in hooks._before_each_validation]
+                    if data.get('name') in hooks._before_validation:
+                        [fn(data) for fn in
+                         hooks._before_validation[data.get('name')]]
 
                 if msg['event'] == "beforeEach":
-                    [fn(msg['data']) for fn in hooks._before_each]
-                    if msg['data']['name'] in hooks._before:
-                        hooks._before[msg['data']['name']](msg['data'])
+                    [fn(data) for fn in hooks._before_each]
+                    if data.get('name') in hooks._before:
+                        [fn(data) for fn in
+                         hooks._before[data.get('name')]]
 
                 if msg['event'] == "afterEach":
-                    if msg['data']['name'] in hooks._after:
-                        hooks._after[msg['data']['name']](msg['data'])
-                    [fn(msg['data']) for fn in hooks._after_each]
+                    if data.get('name') in hooks._after:
+                        [fn(data) for fn in
+                         hooks._after[data.get('name')]]
+                    [fn(data) for fn in hooks._after_each]
 
                 msg = json.dumps(msg) + MESSAGE_DELIMITER
                 if sys.version_info[0] > 2:
@@ -105,12 +108,16 @@ class HookHandler(SocketServer.StreamRequestHandler):
             print("\nConnection closed\n", file=sys.stderr)
 
 
+def add_named_hook(obj, hook, name):
+    obj.setdefault(name, [])
+    obj[name].append(hook)
+
+
 def load_hook_files(pathname):
     """
      Loads files either defined as a glob or a single file path.
     """
     global hooks
-    hooks = Hooks()
 
     fsglob = glob.iglob(pathname)
     for path in fsglob:
@@ -130,11 +137,17 @@ def load_hook_files(pathname):
                 if hook == BEFORE_EACH_VALIDATION:
                     hooks._before_each_validation.append(obj)
                 if hook == BEFORE_VALIDATION:
-                    hooks._before_validation[getattr(obj, 'dredd_name')] = obj
+                    add_named_hook(hooks._before_validation,
+                                   obj,
+                                   getattr(obj, 'dredd_name'))
                 if hook == BEFORE:
-                    hooks._before[getattr(obj, 'dredd_name')] = obj
+                    add_named_hook(hooks._before,
+                                   obj,
+                                   getattr(obj, 'dredd_name'))
                 if hook == AFTER:
-                    hooks._after[getattr(obj, 'dredd_name')] = obj
+                    add_named_hook(hooks._after,
+                                   obj,
+                                   getattr(obj, 'dredd_name'))
 
 
 # Hook decorators
@@ -192,18 +205,20 @@ def after(name):
 def shutdown():
     global server
     server.shutdown()
-    print("Dredd Python hooks handler shutdown", file=sys.stderr)
-    sys.stderr.flush()
+    print("Dredd Python hooks handler shutdown")
+    sys.stdout.flush()
 
 
 def main(args):
     global server
+    global hooks
+    hooks = Hooks()
     # Load hook files
     for a in args:
         load_hook_files(a)
     # Start the server
     SocketServer.TCPServer.allow_reuse_address = True
     server = SocketServer.TCPServer((HOST, PORT), HookHandler)
-    print('Dredd Python hooks handler is running', file=sys.stderr)
-    sys.stderr.flush()
+    print('Starting Dredd Python hooks handler')
+    sys.stdout.flush()
     server.serve_forever()

@@ -61,9 +61,9 @@ Usage
 
 .. code-block:: python
 
-     import dredd_hooks as dredd
+     import dredd_hooks as hooks
 
-     @dredd.before("Machines > Machines collection > Get Machines")
+     @hooks.before("Machines > Machines collection > Get Machines")
      def before_hook(transaction):
          transaction['skip'] = "true"
 
@@ -93,8 +93,26 @@ Contributing
 4. Push (``git push origin my-new-feature``)
 5. Create a new Pull Request
 
+Testing
+=======
+
 Don't forget about tests, see ``test`` directory. The project uses
 ``unittest`` package and ``tox``.
+
+For integration test with Dredd_ interface the project uses ruby based
+`aruba <https://github.com/cucumber/aruba>`_ so to get it running make
+sure you have Ruby installed and then do::
+
+  $ bundle install
+
+After the setup you can run the test easily with::
+
+  $ bundle exec cucumber
+
+More details about the integration test can be found in the
+`dredd-hooks-template repo
+<https://github.com/apiaryio/dredd-hooks-template>`_
+
 
 :copyright: Copyright 2015 by Vilibald Wanča.
 :license: MIT, see LICENSE for details.

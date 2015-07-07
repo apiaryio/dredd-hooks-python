@@ -5,7 +5,11 @@ machine:
 dependencies:
    pre:
      - pip install flake8
+     - bundle install
+     - npm install -g dredd@unstable
 
 test:
    pre:
      - python setup.py flake8
+   post:
+     - bundle exec cucumber

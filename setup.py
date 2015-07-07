@@ -6,17 +6,19 @@ long_desc = open('README.rst').read()
 
 setup(
     name='dredd_hooks',
-    version='0.0.1',
+    version='0.0.2',
     url='https://github.com/apiaryio/dredd-hooks-python/',
     download_url='http://pypi.python.org/pypi/dredd_hooks',
     license='MIT License',
     author='Vilibald Wanča',
     author_email='wvi@apiary.io',
+    maintainer='Apiary',
+    maintainer_email='support@apiary.io',
     description='Python Hooks Bridge for Dredd API Testing Framework',
     long_description=long_desc,
-    zip_safe=False,
+    zip_safe=True,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
