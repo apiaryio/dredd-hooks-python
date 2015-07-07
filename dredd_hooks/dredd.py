@@ -74,32 +74,30 @@ class HookHandler(SocketServer.StreamRequestHandler):
                 else:
                     msg = json.loads(self.rfile.readline().strip())
 
+                data = msg['data']
                 if msg['event'] == "beforeAll":
-                    [fn(msg['data']) for fn in hooks._before_all]
+                    [fn(data) for fn in hooks._before_all]
 
                 if msg['event'] == "afterAll":
-                    [fn(msg['data']) for fn in hooks._after_all]
+                    [fn(data) for fn in hooks._after_all]
 
                 if msg['event'] == "beforeEachValidation":
-                    [fn(msg['data']) for fn in hooks._before_each_validation]
-                    if 'name' in msg['data']:
-                        if msg['data']['name'] in hooks._before_validation:
-                            [fn(msg['data']) for fn in
-                             hooks._before_validation[msg['data']['name']]]
+                    [fn(data) for fn in hooks._before_each_validation]
+                    if data.get('name') in hooks._before_validation:
+                        [fn(data) for fn in
+                         hooks._before_validation[data.get('name')]]
 
                 if msg['event'] == "beforeEach":
-                    [fn(msg['data']) for fn in hooks._before_each]
-                    if 'name' in msg['data']:
-                        if msg['data']['name'] in hooks._before:
-                            [fn(msg['data']) for fn in
-                             hooks._before[msg['data']['name']]]
+                    [fn(data) for fn in hooks._before_each]
+                    if data.get('name') in hooks._before:
+                        [fn(data) for fn in
+                         hooks._before[data.get('name')]]
 
                 if msg['event'] == "afterEach":
-                    if 'name' in msg['data']:
-                        if msg['data']['name'] in hooks._after:
-                            [fn(msg['data']) for fn in
-                             hooks._after[msg['data']['name']]]
-                    [fn(msg['data']) for fn in hooks._after_each]
+                    if data.get('name') in hooks._after:
+                        [fn(data) for fn in
+                         hooks._after[data.get('name')]]
+                    [fn(data) for fn in hooks._after_each]
 
                 msg = json.dumps(msg) + MESSAGE_DELIMITER
                 if sys.version_info[0] > 2:
@@ -111,9 +109,7 @@ class HookHandler(SocketServer.StreamRequestHandler):
 
 
 def add_named_hook(obj, hook, name):
-    if name not in obj:
-        obj[name] = []
-
+    obj.setdefault(name, [])
     obj[name].append(hook)
 
 
@@ -209,7 +205,7 @@ def after(name):
 def shutdown():
     global server
     server.shutdown()
-    print("Dredd Python hooks handler shutdown", file=sys.stdout)
+    print("Dredd Python hooks handler shutdown")
     sys.stdout.flush()
 
 

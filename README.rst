@@ -101,7 +101,7 @@ Don't forget about tests, see ``test`` directory. The project uses
 
 For integration test with Dredd_ interface the project uses ruby based
 `aruba <https://github.com/cucumber/aruba>`_ so to get it running make
-sure you have ruby installed and the do::
+sure you have Ruby installed and then do::
 
   $ bundle install
 
