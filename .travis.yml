@@ -1,0 +1,15 @@
+language: python
+before_install:
+  - npm install --python=python2 -g dredd@unstable
+  - bundle install
+
+python:
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+
+script:
+  - python -B -m unittest discover
+  - pip install -e .
+  - bundle exec cucumber
