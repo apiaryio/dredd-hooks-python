@@ -1,6 +1,6 @@
 language: python
 before_install:
-  - npm install --python=python2 -g dredd@unstable
+  - npm install --python=python2 -g dredd
   - bundle install
 
 python:
