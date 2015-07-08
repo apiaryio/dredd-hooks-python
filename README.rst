@@ -22,7 +22,9 @@ Blueprint`_ with your Python project
 
 
 
-Usage example::
+Usage example:
+
+.. code-block:: python
 
     import dredd_hooks as hooks
 
