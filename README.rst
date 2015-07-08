@@ -31,7 +31,7 @@ Usage example:
     @hooks.before_all
     def foo(transactions):
         for t in transactions:
-            t['request]['headers']['content-type'] = 'application/json'
+            t['request']['headers']['content-type'] = 'application/json'
 
 Download
 ========
