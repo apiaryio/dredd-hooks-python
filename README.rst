@@ -72,7 +72,7 @@ Usage
 
 2. Run it with Dredd::
 
-     $ dredd apiary.apib localhost:3000 --language python --hookfiles hooks.py
+     $ dredd apiary.apib localhost:3000 --language python --hookfiles ./hooks.py
 
 API
 ===
