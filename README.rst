@@ -5,9 +5,6 @@ Python Hooks Bridge for Dredd API Testing Framework
 .. image:: https://travis-ci.org/apiaryio/dredd-hooks-python.svg?branch=master
     :target: https://travis-ci.org/apiaryio/dredd-hooks-python
 
-.. image:: https://circleci.com/gh/apiaryio/dredd-hooks-python.svg?style=svg&circle-token=fabe4e989063164814e78dab78acb58d99e95a2f
-    :target: https://circleci.com/gh/apiaryio/dredd-hooks-python
-
 About
 =====
 
