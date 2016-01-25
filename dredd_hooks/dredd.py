@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  Copyright (c) 2015 Vilibald Wanča
+#  Copyright (c) 2015, 2016 Vilibald Wanča
 #  License: MIT
 #
 from __future__ import print_function
@@ -229,4 +229,4 @@ def main(args):
     except Exception as e:
         print(e, file=sys.stderr)
         sys.stderr.flush()
-        raise e
+        raise
