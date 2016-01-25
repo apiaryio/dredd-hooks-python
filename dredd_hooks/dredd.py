@@ -226,3 +226,7 @@ def main(args):
         server.serve_forever()
     except KeyboardInterrupt:
         shutdown()
+    except Exception as e:
+        print(e, file=sys.stderr)
+        sys.stderr.flush()
+        raise e
