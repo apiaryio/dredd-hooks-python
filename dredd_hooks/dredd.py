@@ -216,9 +216,17 @@ def main(args):
     # Load hook files
     for a in args:
         load_hook_files(a)
-    # Start the server
-    SocketServer.TCPServer.allow_reuse_address = True
-    server = SocketServer.TCPServer((HOST, PORT), HookHandler)
-    print('Starting Dredd Python hooks handler')
-    sys.stdout.flush()
-    server.serve_forever()
+
+    try:
+        # Start the server
+        SocketServer.TCPServer.allow_reuse_address = True
+        server = SocketServer.TCPServer((HOST, PORT), HookHandler)
+        print('Starting Dredd Python hooks handler')
+        sys.stdout.flush()
+        server.serve_forever()
+    except KeyboardInterrupt:
+        shutdown()
+    except Exception as e:
+        print(e, file=sys.stderr)
+        sys.stderr.flush()
+        raise e
