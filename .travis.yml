@@ -1,5 +1,6 @@
 language: python
 before_install:
+  - node --version
   - npm install --python=python2 -g dredd
   - bundle install
 
@@ -8,6 +9,7 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
+  - "3.5"
 
 script:
   - python -B -m unittest discover
