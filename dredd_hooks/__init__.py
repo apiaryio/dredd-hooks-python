@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  Copyright (c) 2015 Vilibald Wanča
+#  Copyright (c) 2015, 2016 Apiary Czech Republic, s.r.o.
 #  License: MIT
 #
 

@@ -116,6 +116,6 @@ More details about the integration test can be found in the
 <https://github.com/apiaryio/dredd-hooks-template>`_
 
 
-:copyright: Copyright 2015 by Vilibald Wanča.
+:copyright: Copyright (c) 2015 Apiary Czech Republic, s.r.o.
 :license: MIT, see LICENSE for details.
 
