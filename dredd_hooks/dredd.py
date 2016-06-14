@@ -45,7 +45,6 @@ AFTER = 'AF'
 hooks = None
 server = None
 
-
 class Hooks(object):
     def __init__(self):
         self._before_all = []
@@ -76,28 +75,28 @@ class HookHandler(SocketServer.StreamRequestHandler):
 
                 data = msg['data']
                 if msg['event'] == "beforeAll":
-                    [fn(data) for fn in hooks._before_all]
+                    [execute_and_flush(fn,data) for fn in hooks._before_all]
 
                 if msg['event'] == "afterAll":
-                    [fn(data) for fn in hooks._after_all]
+                    [execute_and_flush(fn,data) for fn in hooks._after_all]
 
                 if msg['event'] == "beforeEachValidation":
-                    [fn(data) for fn in hooks._before_each_validation]
+                    [execute_and_flush(fn,data) for fn in hooks._before_each_validation]
                     if data.get('name') in hooks._before_validation:
-                        [fn(data) for fn in
+                        [execute_and_flush(fn,data) for fn in
                          hooks._before_validation[data.get('name')]]
 
                 if msg['event'] == "beforeEach":
-                    [fn(data) for fn in hooks._before_each]
+                    [execute_and_flush(fn,data) for fn in hooks._before_each]
                     if data.get('name') in hooks._before:
-                        [fn(data) for fn in
+                        [execute_and_flush(fn,data) for fn in
                          hooks._before[data.get('name')]]
 
                 if msg['event'] == "afterEach":
                     if data.get('name') in hooks._after:
-                        [fn(data) for fn in
+                        [execute_and_flush(fn,data)for fn in
                          hooks._after[data.get('name')]]
-                    [fn(data) for fn in hooks._after_each]
+                    [execute_and_flush(fn,data) for fn in hooks._after_each]
 
                 msg = json.dumps(msg) + MESSAGE_DELIMITER
                 if sys.version_info[0] > 2:
@@ -107,6 +106,9 @@ class HookHandler(SocketServer.StreamRequestHandler):
         except ValueError:
             print("\nConnection closed\n", file=sys.stderr)
 
+def execute_and_flush(fn,data):
+    fn(data)
+    sys.stdout.flush()
 
 def add_named_hook(obj, hook, name):
     obj.setdefault(name, [])
