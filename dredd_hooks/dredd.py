@@ -114,6 +114,19 @@ def add_named_hook(obj, hook, name):
     obj.setdefault(name, [])
     obj[name].append(hook)
 
+#Added to address issue 11  
+def check_dredd_hook_and_dredd_name_append(fn,text,name=None):
+    if hasattr(fn,'dredd_hook'):
+        fn.dredd_hook.append(text)
+    else:
+        fn.dredd_hook = []
+        fn.dredd_hook.append(text)
+    if hasattr(fn,'dredd_name'):
+        fn.dredd_name.append(name)
+    else:
+        fn.dredd_name = []
+        fn.dredd_name.append(name)
+    return fn
 
 def load_hook_files(pathname):
     """
@@ -125,82 +138,75 @@ def load_hook_files(pathname):
     for path in fsglob:
         module = imp.load_source(os.path.basename(path), path)
         for name in dir(module):
+            print(name)
             obj = getattr(module, name)
             if hasattr(obj, 'dredd_hook') and callable(obj):
-                hook = getattr(obj, 'dredd_hook')
-                if hook == BEFORE_ALL:
-                    hooks._before_all.append(obj)
-                if hook == AFTER_ALL:
-                    hooks._after_all.append(obj)
-                if hook == BEFORE_EACH:
-                    hooks._before_each.append(obj)
-                if hook == AFTER_EACH:
-                    hooks._after_each.append(obj)
-                if hook == BEFORE_EACH_VALIDATION:
-                    hooks._before_each_validation.append(obj)
-                if hook == BEFORE_VALIDATION:
-                    add_named_hook(hooks._before_validation,
-                                   obj,
-                                   getattr(obj, 'dredd_name'))
-                if hook == BEFORE:
-                    add_named_hook(hooks._before,
-                                   obj,
-                                   getattr(obj, 'dredd_name'))
-                if hook == AFTER:
-                    add_named_hook(hooks._after,
-                                   obj,
-                                   getattr(obj, 'dredd_name'))
+                hookz = getattr(obj, 'dredd_hook')
+                namez = getattr(obj, 'dredd_name')
+                for i,hook in enumerate(hookz):
+                    if hook == BEFORE_ALL:
+                        hooks._before_all.append(obj)
+                    if hook == AFTER_ALL:
+                        hooks._after_all.append(obj)
+                    if hook == BEFORE_EACH:
+                        hooks._before_each.append(obj)
+                    if hook == AFTER_EACH:
+                        hooks._after_each.append(obj)
+                    if hook == BEFORE_EACH_VALIDATION:
+                        hooks._before_each_validation.append(obj)
+                    if hook == BEFORE_VALIDATION:
+                        add_named_hook(hooks._before_validation,
+                                       obj,
+                                       namez[i])
+                    if hook == BEFORE:
+                        add_named_hook(hooks._before,
+                                       obj,
+                                       namez[i])
+                    if hook == AFTER:
+                        add_named_hook(hooks._after,
+                                       obj,
+                                       namez[i])
 
 
 # Hook decorators
 # Each adds a function property so that the hook loader
 # can easily distinguish each of them
 def before_all(f):
-    f.dredd_hook = BEFORE_ALL
-    return f
+    return check_dredd_hook_and_dredd_name_append(f,BEFORE_ALL)
 
 
 def after_all(f):
-    f.dredd_hook = AFTER_ALL
-    return f
+    return check_dredd_hook_and_dredd_name_append(f,AFTER_ALL)
 
 
 def before_each(f):
-    f.dredd_hook = BEFORE_EACH
-    return f
+    return check_dredd_hook_and_dredd_name_append(f,BEFORE_EACH)
 
 
 def before_each_validation(f):
-    f.dredd_hook = BEFORE_EACH_VALIDATION
-    return f
+    return check_dredd_hook_and_dredd_name_append(f,BEFORE_EACH_VALIDATION)
 
 
 def after_each(f):
     f.dredd_hook = AFTER_EACH
-    return f
+    return check_dredd_hook_and_dredd_name_append(f,AFTER_EACH)
 
 
 def before_validation(name):
     def decorator(f):
-        f.dredd_hook = BEFORE_VALIDATION
-        f.dredd_name = name
-        return f
+        return check_dredd_hook_and_dredd_name_append(f,BEFORE_VALIDATION,name)
     return decorator
 
 
 def before(name):
     def decorator(f):
-        f.dredd_hook = BEFORE
-        f.dredd_name = name
-        return f
+        return check_dredd_hook_and_dredd_name_append(f,BEFORE,name)
     return decorator
 
 
 def after(name):
     def decorator(f):
-        f.dredd_hook = AFTER
-        f.dredd_name = name
-        return f
+        return check_dredd_hook_and_dredd_name_append(f,AFTER,name)
     return decorator
 
 
