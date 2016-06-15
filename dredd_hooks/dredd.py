@@ -138,7 +138,6 @@ def load_hook_files(pathname):
     for path in fsglob:
         module = imp.load_source(os.path.basename(path), path)
         for name in dir(module):
-            print(name)
             obj = getattr(module, name)
             if hasattr(obj, 'dredd_hook') and callable(obj):
                 hookz = getattr(obj, 'dredd_hook')
