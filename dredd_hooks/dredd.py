@@ -187,7 +187,6 @@ def before_each_validation(f):
 
 
 def after_each(f):
-    f.dredd_hook = AFTER_EACH
     return check_dredd_hook_and_dredd_name_append(f,AFTER_EACH)
 
 
