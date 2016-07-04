@@ -44,9 +44,9 @@ class Connection(object):
         self.connection.close()
 
 
-class TestDreddHooks(unittest.TestCase):
+class TestMultiHooks(unittest.TestCase):
     """
-    Tests all the hooks defined.
+    Tests multiple hooks one function.
     """
     @classmethod
     def setUpClass(cls):
@@ -66,6 +66,7 @@ class TestDreddHooks(unittest.TestCase):
         cls.conn.close()
         hooks.shutdown()
         cls.hooks_thr.join()
+        time.sleep(1)
 
     def setUp(self):
         pass
@@ -78,7 +79,7 @@ class TestDreddHooks(unittest.TestCase):
         msg = json.loads(self.conn.readline())
         expect = {"event": "beforeAll",
                   "data": [{
-                      "hooks_modifications": ["before all mod"]}]}
+                      "hooks_modifications": ["multi hook for all"]}]}
         self.assertDictEqual(msg, expect)
 
     def test_after_all(self):
@@ -86,7 +87,7 @@ class TestDreddHooks(unittest.TestCase):
         msg = json.loads(self.conn.readline())
         expect = {"event": "afterAll",
                   "data": [{
-                      "hooks_modifications": ["after all mod"]}]}
+                      "hooks_modifications": ["multi hook for all"]}]}
         self.assertDictEqual(msg, expect)
 
     def test_before_validation(self):
@@ -103,9 +104,9 @@ class TestDreddHooks(unittest.TestCase):
                     "name": "Machines > Machines collection > Get Machines",
                     "hooks_modifications":
                     [
-                        "before each validation mod",
-                        "before validation mod"
-                    ]
+                        "multi hook for single",
+                    ],
+                    "extra": "extra item",
                 }
             }
         self.assertDictEqual(msg, expect)
@@ -124,9 +125,10 @@ class TestDreddHooks(unittest.TestCase):
                     "name": "Machines > Machines collection > Get Machines",
                     "hooks_modifications":
                     [
-                        "before each mod",
-                        "before mod"
-                    ]
+                        "multi hook for single",
+                        "multi hook for single",
+                    ],
+                    "extra": "extra item",
                 }
             }
         self.assertDictEqual(msg, expect)
@@ -145,92 +147,43 @@ class TestDreddHooks(unittest.TestCase):
                     "name": "Machines > Machines collection > Get Machines",
                     "hooks_modifications":
                     [
-                        "after mod",
-                        "after each mod",
+                        "multi hook for single",
+                        "multi hook for single",
                     ],
-                    "fail": "Yay! Failed!",
+                    "extra": "extra item",
                 }
             }
         self.assertDictEqual(msg, expect)
 
     def test_output(self):
         out = self.output.getvalue()
-        for s in ['before all hook',
-                  'before each hook',
-                  'before each validation hook',
-                  'before validation hook',
-                  'after all hook',
-                  'after each hook',
-                  'after hook']:
+        for s in ['multi hook for all',
+                  'multi hook for single',
+                  'multi hook with extra item']:
             self.assertNotEqual(out.find(s), -1)
 
 
-# *_all hooks
-@hooks.before_all
-def before_all_test(transactions):
-    if 'hooks_modifications' not in transactions[0]:
-        transactions[0]['hooks_modifications'] = []
-    transactions[0]['hooks_modifications'].append("before all mod")
-    print('before all hook')
-
-
 @hooks.after_all
-def after_all_test(transactions):
-    if 'hooks_modifications' not in transactions[0]:
-        transactions[0]['hooks_modifications'] = []
-    transactions[0]['hooks_modifications'].append("after all mod")
-    print('after all hook')
-
-
-# *_each hooks
+@hooks.before_all
 @hooks.before_each
-def before_each_test(transaction):
-    if 'hooks_modifications' not in transaction:
-        transaction['hooks_modifications'] = []
-    transaction['hooks_modifications'].append("before each mod")
-    print('before each hook')
-
-
-@hooks.before_each_validation
-def before_each_validation_test(transaction):
-    if 'hooks_modifications' not in transaction:
-        transaction['hooks_modifications'] = []
-    transaction['hooks_modifications'].append("before each validation mod")
-    print('before each validation hook')
-
-
 @hooks.after_each
-def after_each_test(transaction):
-    if 'hooks_modifications' not in transaction:
-        transaction['hooks_modifications'] = []
-    transaction['hooks_modifications'].append("after each mod")
-    print('after each hook')
-
-
-# *_each hooks
 @hooks.before_validation('Machines > Machines collection > Get Machines')
-def before_validation_test(transaction):
-    if 'hooks_modifications' not in transaction:
-        transaction['hooks_modifications'] = []
-    transaction['hooks_modifications'].append("before validation mod")
-    print('before validation hook')
-
-
 @hooks.before("Machines > Machines collection > Get Machines")
-def before_test(transaction):
-    if 'hooks_modifications' not in transaction:
-        transaction['hooks_modifications'] = []
-    transaction['hooks_modifications'].append("before mod")
-    print('before hook')
-
-
-@hooks.after('Machines > Machines collection > Get Machines')
-def after_test(transaction):
-    if 'hooks_modifications' not in transaction:
-        transaction['hooks_modifications'] = []
-    transaction['hooks_modifications'].append("after mod")
-    transaction['fail'] = 'Yay! Failed!'
-    print('after hook')
+@hooks.after("Machines > Machines collection > Get Machines")
+def multi_hook_test(trans):
+    if isinstance(trans, list):
+        if 'hooks_modifications' not in trans[0]:
+            trans[0]['hooks_modifications'] = []
+        trans[0]['hooks_modifications'].append("multi hook for all")
+        print('multi hook for all')
+    else:
+        if 'hooks_modifications' not in trans:
+            trans['hooks_modifications'] = []
+        trans['hooks_modifications'].append("multi hook for single")
+        print('multi hook for single')
+        if trans['name'] == 'Machines > Machines collection > Get Machines':
+            trans['extra'] = 'extra item'
+            print("multi hook with extra item")
 
 
 if __name__ == '__main__':

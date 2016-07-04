@@ -19,59 +19,49 @@ Feature: Hook handlers
           Hello World!
       """
 
-  @debug
   Scenario:
     Given a file named "hookfile.py" with:
       """
-      import sys
       import dredd_hooks as hooks
 
       @hooks.before("/message > GET")
       def before_test(transaction):
           print("before hook handled")
-          sys.stdout.flush()
 
 
       @hooks.after("/message > GET")
       def after_test(transaction):
           print("after hook handled")
-          sys.stdout.flush()
 
 
       @hooks.before_validation("/message > GET")
       def before_validation(transaction):
           print("before validation hook handled")
-          sys.stdout.flush()
 
 
       @hooks.before_all
       def before_all_test(transaction):
           print("before all hook handled")
-          sys.stdout.flush()
 
 
       @hooks.after_all
       def after_all_test(transaction):
           print("after all hook handled")
-          sys.stdout.flush()
 
 
       @hooks.before_each
       def before_each_test(transaction):
           print("before each hook handled")
-          sys.stdout.flush()
 
 
       @hooks.before_each_validation
       def before_each_validation(transaction):
           print("before each validation hook handled")
-          sys.stdout.flush()
 
 
       @hooks.after_each
       def after_each_test(transaction):
           print("after each hook handled")
-          sys.stdout.flush()
 
       """
 

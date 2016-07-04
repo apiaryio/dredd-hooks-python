@@ -22,35 +22,29 @@ Feature: Multiple hookfiles with a glob
   Scenario:
     Given a file named "hookfile1.py" with:
       """
-      import sys
       import dredd_hooks as hooks
 
       @hooks.before("/message > GET")
       def before_test(transaction):
           print("It's me, File1")
-          sys.stdout.flush()
 
       """
     And a file named "hookfile2.py" with:
       """
-      import sys
       import dredd_hooks as hooks
 
       @hooks.before("/message > GET")
       def before_test(transaction):
           print("It's me, File2")
-          sys.stdout.flush()
 
       """
     And a file named "hookfile_to_be_globed.py" with:
       """
-      import sys
       import dredd_hooks as hooks
 
       @hooks.before("/message > GET")
       def before_test(transaction):
           print("It's me, File3")
-          sys.stdout.flush()
 
       """
     When I run `dredd ./apiary.apib http://localhost:4567 --server "ruby server.rb" --language "dredd-hooks-python" --hookfiles ./hookfile1.py --hookfiles ./hookfile2.py --hookfiles ./hookfile_*.py`

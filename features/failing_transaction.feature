@@ -19,7 +19,6 @@ Feature: Failing a transacstion
           Hello World!
       """
 
-  @debug
   Scenario:
     Given a file named "hookfile.py" with:
       """

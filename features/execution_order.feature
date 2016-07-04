@@ -19,11 +19,9 @@ Feature: Execution order
           Hello World!
       """
 
-  @debug
   Scenario:
     Given a file named "hookfile.py" with:
       """
-      import sys
       import dredd_hooks as hooks
 
       key = 'hooks_modifications'
