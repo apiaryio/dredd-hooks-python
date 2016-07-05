@@ -9,6 +9,7 @@ import sys
 import os
 import glob
 import imp
+from functools import wraps
 
 try:
     import SocketServer
@@ -47,6 +48,7 @@ server = None
 
 
 class Hooks(object):
+
     def __init__(self):
         self._before_all = []
         self._after_all = []
@@ -64,6 +66,7 @@ class HookHandler(SocketServer.StreamRequestHandler):
     hooks based on the incoming event. Keeps the connection open until
     the socket is closed by peer.
     """
+
     def handle(self):
         global hooks
         try:
@@ -124,87 +127,97 @@ def load_hook_files(pathname):
         module = imp.load_source(os.path.basename(path), path)
         for name in dir(module):
             obj = getattr(module, name)
-            if hasattr(obj, 'dredd_hook') and callable(obj):
-                hook = getattr(obj, 'dredd_hook')
-                if hook == BEFORE_ALL:
-                    hooks._before_all.append(obj)
-                if hook == AFTER_ALL:
-                    hooks._after_all.append(obj)
-                if hook == BEFORE_EACH:
-                    hooks._before_each.append(obj)
-                if hook == AFTER_EACH:
-                    hooks._after_each.append(obj)
-                if hook == BEFORE_EACH_VALIDATION:
-                    hooks._before_each_validation.append(obj)
-                if hook == BEFORE_VALIDATION:
-                    add_named_hook(hooks._before_validation,
-                                   obj,
-                                   getattr(obj, 'dredd_name'))
-                if hook == BEFORE:
-                    add_named_hook(hooks._before,
-                                   obj,
-                                   getattr(obj, 'dredd_name'))
-                if hook == AFTER:
-                    add_named_hook(hooks._after,
-                                   obj,
-                                   getattr(obj, 'dredd_name'))
+            if hasattr(obj, 'dredd_hooks') and callable(obj):
+                func_hooks = getattr(obj, 'dredd_hooks')
+                for hook, name in func_hooks:
+                    if hook == BEFORE_ALL:
+                        hooks._before_all.append(obj)
+                    if hook == AFTER_ALL:
+                        hooks._after_all.append(obj)
+                    if hook == BEFORE_EACH:
+                        hooks._before_each.append(obj)
+                    if hook == AFTER_EACH:
+                        hooks._after_each.append(obj)
+                    if hook == BEFORE_EACH_VALIDATION:
+                        hooks._before_each_validation.append(obj)
+                    if hook == BEFORE_VALIDATION:
+                        add_named_hook(hooks._before_validation, obj, name)
+                    if hook == BEFORE:
+                        add_named_hook(hooks._before, obj, name)
+                    if hook == AFTER:
+                        add_named_hook(hooks._after, obj, name)
+
+
+def flusher(func):
+    if func in flusher.flushed:
+        return flusher.flushed[func]
+
+    @wraps(func)
+    def call(*args, **kwargs):
+        result = func(*args, **kwargs)
+        sys.stderr.flush()
+        sys.stdout.flush()
+        return result
+    flusher.flushed[func] = call
+    return call
+
+flusher.flushed = {}
+
+
+def make_hook(func, kind, name=None):
+    f = flusher(func)
+    if not hasattr(f, 'dredd_hooks'):
+        f.dredd_hooks = set()
+
+    f.dredd_hooks.add((kind, name))
+    return f
 
 
 # Hook decorators
 # Each adds a function property so that the hook loader
 # can easily distinguish each of them
 def before_all(f):
-    f.dredd_hook = BEFORE_ALL
-    return f
+    return make_hook(f, BEFORE_ALL)
 
 
 def after_all(f):
-    f.dredd_hook = AFTER_ALL
-    return f
+    return make_hook(f, AFTER_ALL)
 
 
 def before_each(f):
-    f.dredd_hook = BEFORE_EACH
-    return f
+    return make_hook(f, BEFORE_EACH)
 
 
 def before_each_validation(f):
-    f.dredd_hook = BEFORE_EACH_VALIDATION
-    return f
+    return make_hook(f, BEFORE_EACH_VALIDATION)
 
 
 def after_each(f):
-    f.dredd_hook = AFTER_EACH
-    return f
+    return make_hook(f, AFTER_EACH)
 
 
 def before_validation(name):
     def decorator(f):
-        f.dredd_hook = BEFORE_VALIDATION
-        f.dredd_name = name
-        return f
+        return make_hook(f, BEFORE_VALIDATION, name)
     return decorator
 
 
 def before(name):
     def decorator(f):
-        f.dredd_hook = BEFORE
-        f.dredd_name = name
-        return f
+        return make_hook(f, BEFORE, name)
     return decorator
 
 
 def after(name):
     def decorator(f):
-        f.dredd_hook = AFTER
-        f.dredd_name = name
-        return f
+        return make_hook(f, AFTER, name)
     return decorator
 
 
 def shutdown():
     global server
     server.shutdown()
+    server.server_close()
     print("Dredd Python hooks handler shutdown")
     sys.stdout.flush()
 

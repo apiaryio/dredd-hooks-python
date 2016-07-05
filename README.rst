@@ -84,6 +84,29 @@ Module ``dredd_hooks`` defines following decorators ``before``, ``after``,
 name
 <http://dredd.readthedocs.org/en/latest/hooks/#getting-transaction-names>`_.
 
+You can combine those decorators together. So one function can be used
+for different hooks but be aware that some hooks have a list of all
+transactions as an argument and not a single transaction.
+
+.. code-block:: python
+
+     import dredd_hooks as hooks
+
+     @hooks.after_all
+     @hooks.before_all
+     @hooks.before_each
+     @hooks.after_each
+     @hooks.before_validation('Machines > Machines collection > Get Machines')
+     @hooks.before("Machines > Machines collection > Get Machines")
+     @hooks.after("Machines > Machines collection > Get Machines")
+     def multi_hook_function(trans):
+        if isinstance(trans, list):
+            print('called with list of transactions')
+        else:
+            if trans['name'] == 'Machines > Machines collection > Get Machines':
+                trans['skip'] = 'true'
+
+
 Usage is very similar to `sync JS hooks API
 <http://dredd.readthedocs.org/en/latest/hooks/#sync-api>`_
 
