@@ -6,7 +6,7 @@ long_desc = open('README.rst').read()
 
 setup(
     name='dredd_hooks',
-    version='0.1.0',
+    version='0.1.1',
     url='https://github.com/apiaryio/dredd-hooks-python/',
     download_url='http://pypi.python.org/pypi/dredd_hooks',
     license='MIT License',

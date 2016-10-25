@@ -124,7 +124,12 @@ def load_hook_files(pathname):
 
     fsglob = glob.iglob(pathname)
     for path in fsglob:
-        module = imp.load_source(os.path.basename(path), path)
+        real_path = os.path.realpath(path)
+        # Append hooks file directory to the sys.path so submodules can be
+        # loaded too.
+        if os.path.dirname(real_path) not in sys.path:
+            sys.path.append(os.path.dirname(real_path))
+        module = imp.load_source(os.path.basename(path), real_path)
         for name in dir(module):
             obj = getattr(module, name)
             if hasattr(obj, 'dredd_hooks') and callable(obj):
