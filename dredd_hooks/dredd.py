@@ -118,11 +118,12 @@ def add_named_hook(obj, hook, name):
 
 def load_hook_files(pathname):
     """
-     Loads files either defined as a glob or a single file path.
+     Loads files either defined as a glob or a single file path
+     sorted by filenames.
     """
     global hooks
 
-    fsglob = glob.iglob(pathname)
+    fsglob = sorted(glob.iglob(pathname))
     for path in fsglob:
         real_path = os.path.realpath(path)
         # Append hooks file directory to the sys.path so submodules can be
