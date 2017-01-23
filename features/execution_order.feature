@@ -73,13 +73,13 @@ Feature: Execution order
           transaction[key].append("after each modification")
 
       """
-    Given I set the environment variables to:
+    And I set the environment variables to:
       | variable                       | value      |
       | TEST_DREDD_HOOKS_HANDLER_ORDER | true       |
 
-    When I run `dredd ./apiary.apib http://localhost:4567 --server "ruby server.rb" --language "dredd-hooks-python" --hookfiles ./hookfile.py`
+    When I run `dredd ./apiary.apib http://localhost:4567 --server="ruby server.rb" --language="dredd-hooks-python" --hookfiles=./hookfile.py`
     Then the exit status should be 0
-    Then the output should contain:
+    And the output should contain:
       """
       0 before all modification
       1 before each modification

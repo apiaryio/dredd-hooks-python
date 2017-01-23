@@ -1,4 +1,4 @@
-Feature: Failing a transacstion
+Feature: Failing a transaction
 
   Background:
     Given I have "dredd-hooks-python" command installed
@@ -29,7 +29,7 @@ Feature: Failing a transacstion
           transaction['fail'] = 'Yay! Failed!'
 
       """
-    When I run `dredd ./apiary.apib http://localhost:4567 --server "ruby server.rb" --language "dredd-hooks-python" --hookfiles ./hookfile.py`
+    When I run `dredd ./apiary.apib http://localhost:4567 --server="ruby server.rb" --language="dredd-hooks-python" --hookfiles=./hookfile.py`
     Then the exit status should be 1
     And the output should contain:
       """
