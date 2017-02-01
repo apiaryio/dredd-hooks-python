@@ -47,7 +47,7 @@ Feature: Multiple hook files with a glob
           print("It's me, File3")
 
       """
-    When I run `dredd ./apiary.apib http://localhost:4567 --server="ruby server.rb" --language="dredd-hooks-python" --hookfiles=./hookfile1.py --hookfiles=./hookfile2.v --hookfiles=./hookfile_*.py`
+    When I run `dredd ./apiary.apib http://localhost:4567 --server="ruby server.rb" --language="dredd-hooks-python" --hookfiles=./hookfile1.py --hookfiles=./hookfile2.py --hookfiles=./hookfile_*.py`
     Then the exit status should be 0
     And the output should contain:
       """
