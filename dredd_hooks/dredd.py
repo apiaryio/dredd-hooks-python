@@ -128,7 +128,11 @@ def load_hook_files(pathname):
     """
     global hooks
 
-    fsglob = sorted(glob.iglob(pathname))
+    if sys.version_info[0] > 2 and sys.version_info[1] > 4:
+        fsglob = sorted(glob.iglob(pathname, recursive=True))
+    else:
+        fsglob = sorted(glob.iglob(pathname))
+
     for path in fsglob:
         real_path = os.path.realpath(path)
         # Append hooks file directory to the sys.path so submodules can be
