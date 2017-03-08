@@ -9,6 +9,7 @@ import sys
 import os
 import glob
 import imp
+import traceback
 from functools import wraps
 
 try:
@@ -109,6 +110,10 @@ class HookHandler(SocketServer.StreamRequestHandler):
                     self.wfile.write(msg)
         except ValueError:
             print("\nConnection closed\n", file=sys.stderr)
+        except Exception as e:
+            traceback.print_exc(file=sys.stderr)
+            sys.stderr.flush()
+            raise
 
 
 def add_named_hook(obj, hook, name):
@@ -246,6 +251,6 @@ def main(args):
     except KeyboardInterrupt:
         shutdown()
     except Exception as e:
-        print(e, file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
         sys.stderr.flush()
         raise
