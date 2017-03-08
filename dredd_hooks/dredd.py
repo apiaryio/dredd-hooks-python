@@ -110,7 +110,7 @@ class HookHandler(SocketServer.StreamRequestHandler):
                     self.wfile.write(msg)
         except ValueError:
             print("\nConnection closed\n", file=sys.stderr)
-        except Exception as e:
+        except Exception:
             traceback.print_exc(file=sys.stderr)
             sys.stderr.flush()
             raise
@@ -254,7 +254,7 @@ def main(args):
         server.serve_forever()
     except KeyboardInterrupt:
         shutdown()
-    except Exception as e:
+    except Exception:
         traceback.print_exc(file=sys.stderr)
         sys.stderr.flush()
         raise
