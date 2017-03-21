@@ -237,18 +237,18 @@ def shutdown():
     sys.stdout.flush()
 
 
-def main(args):
+def main(files, host=HOST, port=PORT):
     global server
     global hooks
     hooks = Hooks()
     # Load hook files
-    for a in args:
-        load_hook_files(a)
+    for f in files:
+        load_hook_files(f)
 
     try:
         # Start the server
         SocketServer.TCPServer.allow_reuse_address = True
-        server = SocketServer.TCPServer((HOST, PORT), HookHandler)
+        server = SocketServer.TCPServer((host, port), HookHandler)
         print('Starting Dredd Python hooks handler')
         sys.stdout.flush()
         server.serve_forever()
