@@ -4,11 +4,12 @@
 #  License: MIT
 #
 from __future__ import print_function
-import json
-import sys
-import os
+
 import glob
 import imp
+import json
+import os
+import sys
 import traceback
 from functools import wraps
 
@@ -123,8 +124,8 @@ def add_named_hook(obj, hook, name):
 
 def load_hook_files(pathname):
     """
-     Loads files either defined as a glob or a single file path
-     sorted by filenames.
+    Loads files either defined as a glob or a single file path
+    sorted by filenames.
     """
     global hooks
 
@@ -175,6 +176,7 @@ def flusher(func):
         return result
     flusher.flushed[func] = call
     return call
+
 
 flusher.flushed = {}
 
