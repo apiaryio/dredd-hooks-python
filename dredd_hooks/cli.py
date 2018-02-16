@@ -5,10 +5,13 @@
 #  License: MIT
 #
 from __future__ import print_function
+
+import sys
+
 import dredd_hooks as dredd
 
 
-if __name__ == '__main__':
+def run_dredd_hooks():
     import argparse
     parser = argparse.ArgumentParser(
         description='Start the Python Dredd hooks worker.'
@@ -23,3 +26,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     dredd.main(args.files, host=args.host, port=args.port)
+
+
+def main():
+    """Run dredd_hooks as a script."""
+    try:
+        sys.exit(run_dredd_hooks())
+    except KeyboardInterrupt:
+        pass

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 long_desc = open('README.rst').read()
 
 setup(
-    name='dredd_hooks',
+    name='dredd-hooks-python',
     version='0.1.3',
     url='https://github.com/apiaryio/dredd-hooks-python/',
     download_url='http://pypi.python.org/pypi/dredd_hooks',
@@ -31,9 +31,13 @@ setup(
     ],
     keywords='HTTP API testing Dredd',
     platforms='any',
-    scripts=['bin/dredd-hooks-python'],
     packages=find_packages(),
     include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'dredd-hooks-python = dredd_hooks.__main__:main'
+        ],
+    },
     tests_require=['flake8'],
-    test_suite="test",
+    test_suite='test',
 )
