@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 long_desc = open('README.rst').read()
 
 setup(
-    name='dredd-hooks-python',
+    name='dredd_hooks',
     version='0.1.3',
     url='https://github.com/apiaryio/dredd-hooks-python/',
     download_url='http://pypi.python.org/pypi/dredd_hooks',
