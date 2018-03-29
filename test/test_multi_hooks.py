@@ -26,7 +26,6 @@ class Connection(object):
 
     def writeline(self, msg):
         msg = msg + hooks.MESSAGE_DELIMITER
-        print("%d" % (sys.version_info[0]))
         if sys.version_info[0] > 2:
             self.wfile.write(msg.encode('utf-8'))
         else:
