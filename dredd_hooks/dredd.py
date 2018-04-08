@@ -109,12 +109,18 @@ class HookHandler(SocketServer.StreamRequestHandler):
                     self.wfile.write(msg.encode('utf-8'))
                 else:
                     self.wfile.write(msg)
-        except ValueError:
-            print("\nConnection closed\n", file=sys.stderr)
-        except Exception:
-            traceback.print_exc(file=sys.stderr)
-            sys.stderr.flush()
-            raise
+
+        except Exception as e:
+            if sys.version_info[0] > 2 and isinstance(e, json.JSONDecodeError):
+                print('Connection closed, could not parse JSON',
+                      file=sys.stderr)
+            elif str(e) == "No JSON object could be decoded":
+                print('Connection closed, could not parse JSON',
+                      file=sys.stderr)
+            else:
+                traceback.print_exc(file=sys.stderr)
+                sys.stderr.flush()
+                raise
 
 
 def add_named_hook(obj, hook, name):
