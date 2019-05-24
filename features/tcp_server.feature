@@ -3,7 +3,7 @@ Feature: TCP server and messages
 Scenario: TCP server
   When I run `dredd-hooks-python` interactively
   And I wait for output to contain "Starting"
-  Then It should start listening on localhost port "61321"
+  Then it should start listening on localhost port 61321
 
 Scenario: Message exchange for event beforeEach
   Given I run `dredd-hooks-python` interactively
@@ -14,7 +14,7 @@ Scenario: Message exchange for event beforeEach
     {"event": "beforeEach", "uuid": "1234-abcd", "data": {"key":"value"}}
     """
   And I send a newline character as a message delimiter to the socket
-  Then I should receive same response
+  Then I should receive the same response
   And I should be able to gracefully disconnect
 
 Scenario: Message exchange for event beforeEachValidation
@@ -26,7 +26,7 @@ Scenario: Message exchange for event beforeEachValidation
     {"event": "beforeEachValidation", "uuid": "2234-abcd", "data": {"key":"value"}}
     """
   And I send a newline character as a message delimiter to the socket
-  Then I should receive same response
+  Then I should receive the same response
   And I should be able to gracefully disconnect
 
 Scenario: Message exchange for event afterEach
@@ -38,7 +38,7 @@ Scenario: Message exchange for event afterEach
     {"event": "afterEach", "uuid": "3234-abcd", "data": {"key":"value"}}
     """
   And I send a newline character as a message delimiter to the socket
-  Then I should receive same response
+  Then I should receive the same response
   And I should be able to gracefully disconnect
 
 Scenario: Message exchange for event beforeAll
@@ -50,7 +50,7 @@ Scenario: Message exchange for event beforeAll
     {"event": "beforeAll", "uuid": "4234-abcd", "data": {"key":"value"}}
     """
   And I send a newline character as a message delimiter to the socket
-  Then I should receive same response
+  Then I should receive the same response
   And I should be able to gracefully disconnect
 
 Scenario: Message exchange for event afterAll
@@ -62,5 +62,5 @@ Scenario: Message exchange for event afterAll
     {"event": "afterAll", "uuid": "5234-abcd", "data": {"key":"value"}}
     """
   And I send a newline character as a message delimiter to the socket
-  Then I should receive same response
+  Then I should receive the same response
   And I should be able to gracefully disconnect

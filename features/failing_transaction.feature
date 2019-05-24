@@ -1,22 +1,30 @@
-Feature: Failing a transacstion
+Feature: Failing a transaction
 
   Background:
     Given I have "dredd-hooks-python" command installed
     And I have "dredd" command installed
-    And a file named "server.rb" with:
+    And a file named "server.js" with:
       """
-      require 'sinatra'
-      get '/message' do
-        "Hello World!\n\n"
-      end
+      require('http')
+        .createServer((req, res) => {
+          if (req.url === '/message') {
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end('Hello World!\n');
+          } else {
+            res.writeHead(500);
+            res.end();
+          }
+        })
+        .listen(4567);
       """
 
     And a file named "apiary.apib" with:
       """
       # My Api
       ## GET /message
-      + Response 200 (text/html;charset=utf-8)
-          Hello World!
+      + Response 200 (text/plain)
+
+              Hello World!
       """
 
   Scenario:
@@ -24,12 +32,11 @@ Feature: Failing a transacstion
       """
       import dredd_hooks as hooks
 
-      @hooks.before("/message > GET")
-      def before_test(transaction):
+      @hooks.before('/message > GET')
+      def before(transaction):
           transaction['fail'] = 'Yay! Failed!'
-
       """
-    When I run `dredd ./apiary.apib http://localhost:4567 --server "ruby server.rb" --language "dredd-hooks-python" --hookfiles ./hookfile.py`
+    When I run `dredd ./apiary.apib http://localhost:4567 --server="node server.js" --language="dredd-hooks-python" --hookfiles=./hookfile.py --loglevel=debug`
     Then the exit status should be 1
     And the output should contain:
       """

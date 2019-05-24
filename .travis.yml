@@ -3,8 +3,7 @@ language: python
 before_install:
 - nvm install node && nvm use node
 - node --version
-- npm install -g dredd --no-optional
-- bundle install
+- npm install
 python:
 - '2.7'
 - '3.2'
@@ -15,7 +14,7 @@ python:
 script:
 - python -B -m unittest discover
 - pip install -e .
-- bundle exec cucumber
+- npm test
 deploy:
   provider: pypi
   distributions: sdist

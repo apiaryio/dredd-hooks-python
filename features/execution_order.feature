@@ -3,20 +3,28 @@ Feature: Execution order
   Background:
     Given I have "dredd-hooks-python" command installed
     And I have "dredd" command installed
-    And a file named "server.rb" with:
+    And a file named "server.js" with:
       """
-      require 'sinatra'
-      get '/message' do
-        "Hello World!\n\n"
-      end
+      require('http')
+        .createServer((req, res) => {
+          if (req.url === '/message') {
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end('Hello World!\n');
+          } else {
+            res.writeHead(500);
+            res.end();
+          }
+        })
+        .listen(4567);
       """
 
     And a file named "apiary.apib" with:
       """
       # My Api
       ## GET /message
-      + Response 200 (text/html;charset=utf-8)
-          Hello World!
+      + Response 200 (text/plain)
+
+              Hello World!
       """
 
   Scenario:
@@ -26,60 +34,53 @@ Feature: Execution order
 
       key = 'hooks_modifications'
 
-      @hooks.before("/message > GET")
-      def before_test(transaction):
+      @hooks.before('/message > GET')
+      def before(transaction):
           transaction.setdefault(key, [])
-          transaction[key].append("before modification")
+          transaction[key].append('before modification')
 
-
-      @hooks.after("/message > GET")
-      def after_test(transaction):
+      @hooks.after('/message > GET')
+      def after(transaction):
           transaction.setdefault(key, [])
-          transaction[key].append("after modification")
+          transaction[key].append('after modification')
 
-
-      @hooks.before_validation("/message > GET")
+      @hooks.before_validation('/message > GET')
       def before_validation(transaction):
           transaction.setdefault(key, [])
-          transaction[key].append("before validation modification")
-
+          transaction[key].append('before validation modification')
 
       @hooks.before_all
-      def before_all_test(transactions):
+      def before_all(transactions):
           transactions[0].setdefault(key, [])
-          transactions[0][key].append("before all modification")
+          transactions[0][key].append('before all modification')
 
       @hooks.after_all
-      def after_all_test(transactions):
+      def after_all(transactions):
           transactions[0].setdefault(key, [])
-          transactions[0][key].append("after all modification")
-
+          transactions[0][key].append('after all modification')
 
       @hooks.before_each
-      def before_each_test(transaction):
+      def before_each(transaction):
           transaction.setdefault(key, [])
-          transaction[key].append("before each modification")
-
+          transaction[key].append('before each modification')
 
       @hooks.before_each_validation
       def before_each_validation(transaction):
           transaction.setdefault(key, [])
-          transaction[key].append("before each validation modification")
-
+          transaction[key].append('before each validation modification')
 
       @hooks.after_each
-      def after_each_test(transaction):
+      def after_each(transaction):
           transaction.setdefault(key, [])
-          transaction[key].append("after each modification")
-
+          transaction[key].append('after each modification')
       """
-    Given I set the environment variables to:
+    And I set the environment variables to:
       | variable                       | value      |
       | TEST_DREDD_HOOKS_HANDLER_ORDER | true       |
 
-    When I run `dredd ./apiary.apib http://localhost:4567 --server "ruby server.rb" --language "dredd-hooks-python" --hookfiles ./hookfile.py`
+    When I run `dredd ./apiary.apib http://localhost:4567 --server="node server.js" --language="dredd-hooks-python" --hookfiles=./hookfile.py --loglevel=debug`
     Then the exit status should be 0
-    Then the output should contain:
+    And the output should contain:
       """
       0 before all modification
       1 before each modification
