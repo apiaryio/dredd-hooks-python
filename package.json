@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "test": "dredd-hooks-template test"
+  },
+  "private": true,
+  "devDependencies": {
+    "dredd-hooks-template": "1.0.0"
+  }
+}
