@@ -4,6 +4,6 @@
   },
   "private": true,
   "devDependencies": {
-    "dredd-hooks-template": "1.1.1"
+    "dredd-hooks-template": "1.1.2"
   }
 }
