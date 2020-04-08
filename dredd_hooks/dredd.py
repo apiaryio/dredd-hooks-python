@@ -141,6 +141,9 @@ def load_hook_files(pathname):
         fsglob = sorted(glob.iglob(pathname))
 
     for path in fsglob:
+        print('Found hook', path)
+        sys.stdout.flush()
+
         real_path = os.path.realpath(path)
         # Append hooks file directory to the sys.path so submodules can be
         # loaded too.
@@ -249,6 +252,12 @@ def main(files, host=HOST, port=PORT):
     global server
     global hooks
     hooks = Hooks()
+    print('Starting Dredd Python Hooks with:')
+    print('  - Files:', files)
+    print('  - Host:', host)
+    print('  - Port:', port)
+    sys.stdout.flush()
+
     # Load hook files
     for f in files:
         load_hook_files(f)
